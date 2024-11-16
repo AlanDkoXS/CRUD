@@ -11,6 +11,10 @@ function App() {
     readUsers();
   }, []);
 
+  const createUser = (dataForm) => {
+    setUsers({ url: `${baseUrl}/users`, method: 'POST', body: dataForm });
+  };
+
   // READ
 
   const readUsers = () => {
@@ -28,14 +32,19 @@ function App() {
             Agregar Usuario
           </button>
         </div>
-      </div>{' '}
+      </div>
+
+      <AddEdit createUser={createUser} />
       <div>
-        {' '}
+       { loading ? (
+        <h2>Cargando...</h2>
+    ) : (<>
         {users?.data.map((user) => (
           <div key={user?.id}>
             <h3>{user?.first_name}</h3>
           </div>
         ))}
+        </>)}
       </div>
       <pre> {JSON.stringify(users, null, 2)} </pre>
     </Layout>
