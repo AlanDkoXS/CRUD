@@ -1,6 +1,5 @@
-import "../assets/styles/Buttons.css";
+import '../assets/styles/Buttons.css';
 export default function Buttons({ page, maxPage, setPage }) {
-
   const onPrev = () => {
     if (page > 1) {
       setPage(page - 1);
@@ -17,9 +16,13 @@ export default function Buttons({ page, maxPage, setPage }) {
     <>
       <div className="container">
         <button className="page-button" onClick={onPrev} disabled={page === 1}>
-           Before
+          Previous
         </button>
-        <button className="page-button" onClick={onNext} disabled={page === maxPage}>
+        <button
+          className="page-button"
+          onClick={onNext}
+          disabled={page === maxPage}
+        >
           Next
         </button>
         <p className="page-info">

@@ -1,34 +1,25 @@
-import '../assets/styles/Buttons.css';
-export default function Buttons({ page, maxPage, setPage }) {
-  const onPrev = () => {
-    if (page > 1) {
-      setPage(page - 1);
-    }
-  };
-
-  const onNext = () => {
-    if (page < maxPage) {
-      setPage(page + 1);
-    }
-  };
-
-  return (
-    <>
-      <div className="container">
-        <button className="page-button" onClick={onPrev} disabled={page === 1}>
-          Before
-        </button>
-        <button
-          className="page-button"
-          onClick={onNext}
-          disabled={page === maxPage}
-        >
-          Next
-        </button>
-        <p className="page-info">
-          Page {page}/{maxPage}
-        </p>
+export default function Confirm({ user, deleteUser, setIsOpen }) {
+    return (
+      <div className="confirm-container">
+        <h2 className="confirm-title">Confirm</h2>
+        <h3 className="confirm-subtitle">Are you sure you want to delete the file?</h3>
+        <div className="confirm-buttons">
+          <button
+            className="confirm-btn confirm-btn--delete"
+            onClick={() => {
+              deleteUser(user.id); 
+              setIsOpen(false);
+            }}
+          >
+            Delete
+          </button>
+          <button
+            className="confirm-btn confirm-btn--close"
+            onClick={() => setIsOpen(false)}
+          >
+            Close
+          </button>
+        </div>
       </div>
-    </>
-  );
-}
+    );
+  }
