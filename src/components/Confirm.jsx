@@ -33,15 +33,14 @@ export default function Confirm({ user, deleteUser, setIsOpen }) {
         </DialogActions>
       </Dialog>
 
-      {/* Backdrop with blur effect */}
       <Backdrop
         sx={{
             backgroundColor: 'rgba(0, 0, 0, 0)',
           zIndex: (theme) => theme.zIndex.drawer + 1,
-          backdropFilter: 'blur(5px)', // Applying the blur effect here
+          backdropFilter: 'blur(5px)',
         }}
         open={true}
-        onClick={handleClose} // Close the modal if the backdrop is clicked
+        onClick={handleClose}
       />
     </>
   );

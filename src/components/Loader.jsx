@@ -5,20 +5,26 @@ import '../assets/styles/Loader.css';
 export default function Loader() {
   return (
     <>
-      {/* Backdrop con el efecto de desenfoque */}
       <Backdrop
         sx={{
-          backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fondo oscuro con opacidad del 50%
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
           zIndex: (theme) => theme.zIndex.drawer + 1,
-          backdropFilter: 'blur(5px)', // Desenfoque del fondo
+          backdropFilter: 'blur(5px)',
         }}
-        open={true} // Mostrar el Backdrop
+        open={true}
       >
-        {/* Contenedor de loader */}
         <div className="showbox">
           <div className="loader">
             <svg className="circular" viewBox="25 25 50 50">
-              <circle className="path" cx="50" cy="50" r="20" fill="none" strokeWidth="2" strokeMiterlimit="10"/>
+              <circle
+                className="path"
+                cx="50"
+                cy="50"
+                r="20"
+                fill="none"
+                strokeWidth="2"
+                strokeMiterlimit="10"
+              />
             </svg>
           </div>
         </div>

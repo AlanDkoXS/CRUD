@@ -2,21 +2,27 @@ import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { TextField, Button, Checkbox, FormControlLabel, InputLabel, FormGroup, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
-import "../assets/styles/AddEdit.css";
+import {
+  TextField,
+  Button,
+  Checkbox,
+  FormControlLabel,
+  InputLabel,
+  FormGroup,
+  Box,
+} from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 
 const schema = yup.object({
-  first_name: yup.string().required("First name is required"),
-  last_name: yup.string().required("Last name is required"),
-  email: yup
-    .string()
-    .email("Invalid email")
-    .required("Email is required"),
-  password: yup.string().required("Password is required"),
+  first_name: yup.string().required('First name is required'),
+  last_name: yup.string().required('Last name is required'),
+  email: yup.string().email('Invalid email').required('Email is required'),
+  password: yup.string().required('Password is required'),
 });
 
 export default function AddEdit({ user, onSave }) {
-  const [imagePreview, setImagePreview] = useState(null); // Estado para la imagen cargada
+  const [imagePreview, setImagePreview] = useState(null);
+  const theme = useTheme();
 
   const {
     handleSubmit,
@@ -32,15 +38,15 @@ export default function AddEdit({ user, onSave }) {
   useEffect(() => {
     if (user) {
       reset(user);
-      setImagePreview(user.image_url); // Mostrar la imagen inicial si existe
+      setImagePreview(user.image_url);
     } else {
       reset({
-        first_name: "",
-        last_name: "",
-        email: "",
-        password: "",
-        birthday: "",
-        image_url: "",
+        first_name: '',
+        last_name: '',
+        email: '',
+        password: '',
+        birthday: '',
+        image_url: '',
         showBirthday: false,
       });
     }
@@ -48,11 +54,10 @@ export default function AddEdit({ user, onSave }) {
 
   const onSubmit = (dataForm) => {
     if (!dataForm.image_url) {
-      // Usar imagen por defecto si no se carga ninguna
-      dataForm.image_url = "./src/assets/img/user.svg";
+      dataForm.image_url = './src/assets/img/user.svg';
     }
     if (!dataForm.birthday) {
-      dataForm.birthday = "2000-01-01";
+      dataForm.birthday = '2000-01-01';
     }
     if (user) {
       onSave(dataForm, user.id);
@@ -60,33 +65,42 @@ export default function AddEdit({ user, onSave }) {
       onSave(dataForm);
     }
     reset({
-      first_name: "",
-      last_name: "",
-      email: "",
-      password: "",
-      birthday: "",
-      image_url: "",
+      first_name: '',
+      last_name: '',
+      email: '',
+      password: '',
+      birthday: '',
+      image_url: '',
       showBirthday: false,
     });
   };
 
-  const showBirthday = watch("showBirthday", false);
+  const showBirthday = watch('showBirthday', false);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      // Crear una URL temporal para mostrar la imagen cargada
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImagePreview(reader.result); // Actualizar la vista con la imagen cargada
+        setImagePreview(reader.result);
       };
-      reader.readAsDataURL(file); // Leer el archivo como una URL
+      reader.readAsDataURL(file);
     }
   };
 
   return (
-    <div className="form">
-      <h2 className="form__title">{user ? "Update" : "Register User"}</h2>
+    <Box
+      className="form"
+      sx={{
+        padding: 3,
+        backgroundColor: theme.palette.background.paper,
+        borderRadius: 2,
+        boxShadow: 1,
+      }}
+    >
+      <h2 className="form__title" style={{ color: theme.palette.primary.main }}>
+        {user ? 'Update' : 'Register User'}
+      </h2>
       <form className="form__content" onSubmit={handleSubmit(onSubmit)}>
         <FormGroup>
           <TextField
@@ -96,7 +110,12 @@ export default function AddEdit({ user, onSave }) {
             margin="normal"
             error={!!errors.first_name}
             helperText={errors.first_name?.message}
-            {...register("first_name")}
+            {...register('first_name')}
+            sx={{
+              marginBottom: 2,
+              '& .MuiInputLabel-root': { color: theme.palette.primary.main },
+              '& .MuiInputBase-root': { color: theme.palette.primary.main },
+            }}
           />
           <TextField
             label="Last Name"
@@ -105,7 +124,12 @@ export default function AddEdit({ user, onSave }) {
             margin="normal"
             error={!!errors.last_name}
             helperText={errors.last_name?.message}
-            {...register("last_name")}
+            {...register('last_name')}
+            sx={{
+              marginBottom: 2,
+              '& .MuiInputLabel-root': { color: theme.palette.primary.main },
+              '& .MuiInputBase-root': { color: theme.palette.primary.main },
+            }}
           />
           <TextField
             label="Email"
@@ -114,7 +138,12 @@ export default function AddEdit({ user, onSave }) {
             margin="normal"
             error={!!errors.email}
             helperText={errors.email?.message}
-            {...register("email")}
+            {...register('email')}
+            sx={{
+              marginBottom: 2,
+              '& .MuiInputLabel-root': { color: theme.palette.primary.main },
+              '& .MuiInputBase-root': { color: theme.palette.primary.main },
+            }}
           />
           <TextField
             label="Password"
@@ -124,12 +153,20 @@ export default function AddEdit({ user, onSave }) {
             type="password"
             error={!!errors.password}
             helperText={errors.password?.message}
-            {...register("password")}
+            {...register('password')}
+            sx={{
+              marginBottom: 2,
+              '& .MuiInputLabel-root': { color: theme.palette.primary.main },
+              '& .MuiInputBase-root': { color: theme.palette.primary.main },
+            }}
           />
 
           <FormControlLabel
-            control={<Checkbox {...register("showBirthday")} />}
-            label={`Do you ${user ? "want to update your" : "want to add your"} birthday?`}
+            control={<Checkbox {...register('showBirthday')} />}
+            label={`Do you ${user ? 'want to update your' : 'want to add your'} birthday?`}
+            sx={{
+              color: theme.palette.primary.main,
+            }}
           />
 
           {showBirthday && (
@@ -142,18 +179,28 @@ export default function AddEdit({ user, onSave }) {
               InputLabelProps={{
                 shrink: true,
               }}
-              {...register("birthday")}
-              inputProps={{ max: new Date().toISOString().split("T")[0] }}
+              {...register('birthday')}
+              inputProps={{ max: new Date().toISOString().split('T')[0] }}
+              sx={{
+                marginBottom: 2,
+                '& .MuiInputLabel-root': { color: theme.palette.primary.main },
+                '& .MuiInputBase-root': { color: theme.palette.primary.main },
+              }}
             />
           )}
 
           <div className="form__group">
-            <InputLabel htmlFor="image_url">Upload Profile Picture:</InputLabel>
+            <InputLabel
+              htmlFor="image_url"
+              sx={{ color: theme.palette.primary.main }}
+            >
+              Upload Profile Picture:
+            </InputLabel>
             <input
               type="file"
               accept="image/*"
-              {...register("image_url")}
-              onChange={handleImageChange} // Agregar el manejador de cambio para la imagen
+              {...register('image_url')}
+              onChange={handleImageChange}
             />
             {imagePreview && (
               <div className="form__image-preview">
@@ -169,10 +216,10 @@ export default function AddEdit({ user, onSave }) {
             fullWidth
             sx={{ marginTop: 2 }}
           >
-            {user ? "Update" : "Save"}
+            {user ? 'Update' : 'Save'}
           </Button>
         </FormGroup>
       </form>
-    </div>
+    </Box>
   );
 }

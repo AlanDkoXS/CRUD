@@ -1,14 +1,16 @@
 import UserCard from './UserCard';
-import '../assets/styles/UserList.css';
 import usePage from '../hooks/usePage';
 import { useEffect } from 'react';
 import Buttons from './Buttons';
+import { useTheme } from '@mui/material/styles';
+import { Box } from '@mui/material';
 
 export default function UserList({ users, openEdit, openDelete }) {
   const [page, setPage, maxPage, itemsPerPage] = usePage({
     data: users,
   });
 
+  const theme = useTheme();
   useEffect(() => {
     scrollUp();
   }, [page]);
@@ -25,22 +27,55 @@ export default function UserList({ users, openEdit, openDelete }) {
     : [];
 
   return (
-    <div className="cards__container">
-      <div className="cards">
+    <Box
+      className="cards__container"
+      sx={{
+        backgroundColor: 'surface.main',
+        borderRadius: '1rem',
+        padding: '1rem',
+      }}
+    >
+      <Box
+        className="cards"
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+          gridGap: '1em',
+          justifyItems: 'center',
+          width: '100%',
+        }}
+      >
         {currentPageItem?.map((user) => {
           return (
-            <UserCard
+            <Box
               key={user.id}
-              user={user}
-              openEdit={openEdit}
-              openDelete={openDelete}
-            />
+              sx={{
+                borderRadius: '1rem',
+                padding: '1rem',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'flex-start',
+              }}
+            >
+              <UserCard
+                user={user}
+                openEdit={openEdit}
+                openDelete={openDelete}
+              />
+            </Box>
           );
         })}
-      </div>
-      <div className="pagination">
+      </Box>
+      <Box
+        className="pagination"
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          marginTop: '20px',
+        }}
+      >
         <Buttons page={page} maxPage={maxPage} setPage={setPage} />
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }
