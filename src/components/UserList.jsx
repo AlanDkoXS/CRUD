@@ -1,8 +1,8 @@
-import UserCard from "./UserCard";
-import "../assets/styles/UserList.css";
-import usePage from "../hooks/usePage";
-import { useEffect } from "react";
-import Buttons from "./Buttons";
+import UserCard from './UserCard';
+import '../assets/styles/UserList.css';
+import usePage from '../hooks/usePage';
+import { useEffect } from 'react';
+import Buttons from './Buttons';
 
 export default function UserList({ users, openEdit, openDelete }) {
   const [page, setPage, maxPage, itemsPerPage] = usePage({
@@ -16,7 +16,7 @@ export default function UserList({ users, openEdit, openDelete }) {
   const scrollUp = () => {
     window.scrollTo({
       top: 0,
-      behavior: "smooth",
+      behavior: 'smooth',
     });
   };
 

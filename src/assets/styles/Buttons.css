@@ -1,0 +1,48 @@
+/* Contenedor de los botones */
+.container__button {
+    display: flex;
+    justify-content: space-between; /* Alineación de los botones en una fila con espacio entre ellos */
+    align-items: center;
+    gap: 20px; /* Espacio entre los botones */
+    flex-direction: row; /* Asegura que los botones estén en una sola fila */
+    padding: 1rem;
+    background-color: var(--md-sys-color-background);
+    max-width: 600px; /* Controlar el ancho máximo del contenedor */
+    margin: 0 auto; /* Centrar el contenedor */
+  }
+
+  /* Estilo base de los botones de paginación */
+  .page-button {
+    background-color: var(--md-sys-color-primary); /* Fondo del botón */
+    color: var(--md-sys-color-on-primary); /* Color del texto */
+    font-size: 16px;
+    font-weight: 600;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    flex: 1; /* Hacer que ambos botones tengan el mismo ancho */
+    text-align: center; /* Centrar el texto dentro del botón */
+  }
+
+  /* Efecto hover cuando los botones no están desactivados */
+  .page-button:not([disabled]):hover {
+    background-color: var(--md-sys-color-primary-container); /* Hover color */
+  }
+
+  /* Estilo cuando los botones están desactivados */
+  .page-button:disabled {
+    background-color: var(--md-sys-color-surface-variant); /* Fondo desactivado */
+    color: var(--md-sys-color-on-surface-variant); /* Texto desactivado */
+    cursor: not-allowed;
+  }
+
+  /* Estilo para la información de la página */
+  .page-info {
+    font-size: 1em;
+    color: var(--md-sys-color-on-surface);
+    font-weight: 500;
+    margin-top: 20px; /* Espacio entre los botones y la información */
+    text-align: center; /* Alineación central de la información */
+  }

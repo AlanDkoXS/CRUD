@@ -1,26 +1,29 @@
 .loader {
-    position: relative;
-    margin: 0 auto;
-    width: 100px;
+    position: fixed; /* Usamos `fixed` para que el loader esté siempre en la misma posición, independientemente del scroll */
+    display: flex; /* Usamos flexbox para centrar el contenido */
+    justify-content: center; /* Centrado horizontal */
+    align-items: center; /* Centrado vertical */
+    width: 100px; /* Define el tamaño del contenedor */
+    height: 100px; /* Define el tamaño del contenedor */
+    margin: 0 auto; /* Centrado en el contenedor padre */
+    top: 50%; /* Posición verticalmente centrada */
+    left: 50%; /* Posición horizontalmente centrada */
+    transform: translate(-50%, -50%); /* Ajuste fino para asegurarse de que el círculo quede perfectamente centrado */
+    z-index: 9999; /* Asegura que el loader siempre esté encima de todos los demás elementos */
   }
 
   .loader:before {
     content: '';
     display: block;
-    padding-top: 100%;
+    padding-top: 100%; /* Asegura que el contenedor sea cuadrado */
   }
 
   .circular {
     animation: rotate 2s linear infinite;
-    height: 100%;
-    transform-origin: center center;
-    width: 100%;
+    width: 100%; /* Toma todo el ancho disponible */
+    height: 100%; /* Toma toda la altura disponible */
+    transform-origin: center center; /* Asegura que la animación rote desde el centro */
     position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin: auto;
   }
 
   .path {

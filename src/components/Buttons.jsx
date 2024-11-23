@@ -14,7 +14,7 @@ export default function Buttons({ page, maxPage, setPage }) {
 
   return (
     <>
-      <div className="container">
+      <div className="container__button">
         <button className="page-button" onClick={onPrev} disabled={page === 1}>
           Previous
         </button>
