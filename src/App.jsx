@@ -1,52 +1,97 @@
-import { useEffect } from 'react';
-import useFetch from './hooks/useFetch';
-import Layout from './layouts/Layout';
-import AddEdit from './components/AddEdit';
+import { useEffect, useState } from "react";
+import useFetch from "./hooks/useFetch";
+import Layout from "./layouts/Layout";
+import AddEdit from "./components/AddEdit";
+import UserList from "./components/UserList";
+import Modal from "./components/Modal";
+import Loader from "./components/Loader";
+import Confirm from "./components/Confirm";
+import "./assets/styles/App.css";
 
-const baseUrl = 'https://users-crud-api-8lio.onrender.com/api/v1';
+const baseUrl = "https://users-crud-api-81io.onrender.com/api/v1";
+
 function App() {
-  const [users, setUsers] = useFetch();
+  const [users, setUsers, loading] = useFetch();
+  const [isOpen, setIsOpen] = useState(false);
+  const [currentChild, setCurrentChild] = useState(null);
 
   useEffect(() => {
     readUsers();
-  }, []);
+  }, [isOpen]);
 
+  // Create
   const createUser = (dataForm) => {
-    setUsers({ url: `${baseUrl}/users`, method: 'POST', body: dataForm });
+    setUsers({
+      url: `${baseUrl}/users`,
+      method: "POST",
+      body: dataForm,
+    });
+    setIsOpen(false);
   };
 
-  // READ
-
+  // Read
   const readUsers = () => {
     setUsers({ url: `${baseUrl}/users` });
   };
 
+  //Update
+  const updateUser = (dataForm, userId) => {
+    setUsers({
+      url: `${baseUrl}/users/${userId}`,
+      method: "PATCH",
+      body: dataForm,
+    });
+    setIsOpen(false);
+  };
+
+  //Delete
+  const deleteUser = (userId) => {
+    setUsers({
+      url: `${baseUrl}/users/${userId}`,
+      method: "DELETE"
+    })
+  }
+
+  //handlerOpenModal
+  const openAdd = () => {
+    setIsOpen(true);
+    setCurrentChild(<AddEdit onSave={createUser}/>);
+  };
+
+  const openEdit = (user) => {
+    setIsOpen(true);
+    setCurrentChild(<AddEdit user={user} onSave={updateUser}/>);
+  };
+
+  const openDelete = (user) => {
+    setIsOpen(true);
+    setCurrentChild(<Confirm user ={user} deleteUser={deleteUser} setIsOpen={setIsOpen}/>)
+  }
+
   return (
     <Layout>
-      <div className="header">
+      <header className="header">
         <div className="header__container">
-          <h1 className="header__tittle">Usuarios</h1>
-        </div>
-        <div className="header__button">
-          <button type="button" className="btn">
-            Agregar Usuario
-          </button>
-        </div>
-      </div>
-
-      <AddEdit createUser={createUser} />
-      <div>
-       { loading ? (
-        <h2>Cargando...</h2>
-    ) : (<>
-        {users?.data.map((user) => (
-          <div key={user?.id}>
-            <h3>{user?.first_name}</h3>
+          <h1 className="header__title">Users</h1>
+          <div>
+            <button className="header__button" type="button" onClick={openAdd}>
+              Add User
+            </button>
           </div>
-        ))}
-        </>)}
-      </div>
-      <pre> {JSON.stringify(users, null, 2)} </pre>
+        </div>
+      </header>
+
+      <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
+        {currentChild}
+      </Modal>
+
+      <main className="container">
+        {loading ? (
+          <Loader/>
+        ) : (
+          <UserList users={users} openEdit={openEdit} openDelete={openDelete}/>
+        )}
+      </main>
     </Layout>
   );
 }

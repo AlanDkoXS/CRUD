@@ -1,82 +1,153 @@
-import { useForm } from "react-hook-form"
-import { yupResolver } from "@hookform/resolvers/yup"
-import * as yup from "yup"
-import { useEffect } from 'react'
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import "../assets/styles/AddEdit.css";
 
-const schema = yup
-  .object({
-    username: yup.string().required('El nombre de usuario es requerido'),
-    email: yup.string().email().required('El email es requerido'),
-    password: yup.string().required('La contraseña es requerida'),
-    first_name: yup.string().required('El nombre es requerido'),
-    last_name: yup.string().required('El apellido es requerido'),
-    birthdate: yup.date().required('La fecha de nacimiento es requerida').nullable(),
-    profile_image: yup.string().url('La URL de la imagen debe ser válida').required('La imagen es requerida')
-  })
+const schema = yup.object({
+  first_name: yup.string().required("First name is required"),
+  last_name: yup.string().required("Last name is required"),
+  email: yup
+    .string()
+    .email("Invalid email")
+    .required("Email is required"),
+  password: yup.string().required("Password is required"),
+});
 
-function AddEdit ({ user, setData }) {
-  const { handleSubmit, register, watch, formState: { errors }, reset } = useForm({
+export default function AddEdit({ user, onSave }) {
+  const {
+    handleSubmit,
+    register,
+    reset,
+    watch,
+    formState: { errors },
+  } = useForm({
     resolver: yupResolver(schema),
-    defaultValues: user || {}
-  })
+    defaultValues: user || {},
+  });
 
   useEffect(() => {
     if (user) {
-      reset(user)
+      reset(user);
     } else {
-      reset({ username: '', email: '', password: '', first_name: '', last_name: '', birthdate: '', profile_image: '' })
+      reset({
+        first_name: "",
+        last_name: "",
+        email: "",
+        password: "",
+        birthday: "",
+        image_url: "",
+        showBirthday: false,
+      });
     }
-  }, [user])
+  }, [user, reset]);
 
-  const onSubmit = (data) => {
-    setData(data)
-  }
+  const onSubmit = (dataForm) => {
+    if (!dataForm.image_url) {
+      // Use the default image if no image is provided
+      dataForm.image_url = "./src/assets/img/user.svg";
+    }
+    if (!dataForm.birthday) {
+      dataForm.birthday = "2000-01-01";
+    }
+    if (user) {
+      onSave(dataForm, user.id);
+    } else {
+      onSave(dataForm);
+    }
+    reset({
+      first_name: "",
+      last_name: "",
+      email: "",
+      password: "",
+      birthday: "",
+      image_url: "",
+      showBirthday: false,
+    });
+  };
+
+  const showBirthday = watch("showBirthday", false);
 
   return (
-    <div>
-      <h2>{user ? 'Actualizar' : 'Registro'}</h2>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div>
-          <label>Imagen de Usuario:</label>
-          <input type="text" {...register("profile_image")} />
-          <span>{errors.profile_image && errors.profile_image.message}</span>
+    <div className="form">
+      <h2 className="form__title">{user ? "Update" : "Register User"}</h2>
+      <form className="form__content" onSubmit={handleSubmit(onSubmit)}>
+        <div className="form__group">
+          <label className="form__label">First Name:</label>
+          <input
+            className="form__input"
+            type="text"
+            {...register("first_name")}
+          />
+          <span className="form__error">
+            {errors.first_name && errors.first_name.message}
+          </span>
+        </div>
+        <div className="form__group">
+          <label className="form__label">Last Name:</label>
+          <input
+            className="form__input"
+            type="text"
+            {...register("last_name")}
+          />
+          <span className="form__error">
+            {errors.last_name && errors.last_name.message}
+          </span>
+        </div>
+        <div className="form__group">
+          <label className="form__label">Email:</label>
+          <input className="form__input" type="text" {...register("email")} />
+          <span className="form__error">
+            {errors.email && errors.email.message}
+          </span>
+        </div>
+        <div className="form__group">
+          <label className="form__label">Password:</label>
+          <input
+            className="form__input"
+            type="password"
+            {...register("password")}
+          />
+          <span className="form__error">
+            {errors.password && errors.password.message}
+          </span>
         </div>
         <div>
-          <label>Nombre:</label>
-          <input {...register("first_name")} />
-          <span>{errors.first_name && errors.first_name.message}</span>
+          <input
+            type="checkbox"
+            {...register("showBirthday")}
+            id="showBirthday"
+          />
+          <label className="form__label" htmlFor="showBirthday">
+            Do you {user ? "want to update your" : "want to add your"} birthday?
+          </label>
+          <br />
         </div>
-        <div>
-          <label>Apellido:</label>
-          <input {...register("last_name")} />
-          <span>{errors.last_name && errors.last_name.message}</span>
-        </div>
-        <div>
-          <label>Username:</label>
-          <input {...register("username")} />
-          <span>{errors.username && errors.username.message}</span>
-        </div>
-        <div>
-          <label>Email:</label>
-          <input type='email' {...register("email")} />
-          <span>{errors.email && errors.email.message}</span>
-        </div>
-        <div>
-          <label>Password:</label>
-          <input type='password' {...register("password")} />
-          <span>{errors.password && errors.password.message}</span>
-        </div>
-        <div>
-          <label>Fecha de Nacimiento:</label>
-          <input type='date' {...register("birthdate")} />
-          <span>{errors.birthdate && errors.birthdate.message}</span>
+        {showBirthday && (
+          <div className="form__group">
+            <label className="form__label">Birthday:</label>
+            <input
+              className="form__input"
+              type="date"
+              {...register("birthday")}
+              max={new Date().toISOString().split("T")[0]}
+            />
+          </div>
+        )}
+        <div className="form__group">
+          <label className="form__label">Upload Profile Picture:</label>
+          <input
+            className="form__input"
+            type="file"
+            accept="image/*"
+            {...register("image_url")}
+          />
         </div>
 
-        <br />
-        <button type="submit">{user ? 'Actualizar' : 'Guardar'}</button>
+        <button className="submit" type="submit">
+          {user ? "Update" : "Save"}
+        </button>
       </form>
     </div>
-  )
+  );
 }
-
-export default AddEdit;

@@ -1,52 +1,47 @@
-import { useState } from 'react'
-import axios from 'axios'
+import { useState } from "react";
+import axios from "axios";
 
-function useFetch () {
-  const [data, setData] = useState(null)
-  const [error, setError] = useState(null)
-  const [loading, setLoading] = useState(false)
+export default function useFetch() {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  async function dataFetch ({ url, method = 'get', id = null, body = null }) {
-    setLoading(true)
-
-    url = `${url}${id ? `/${id}/` : ''}`
-    method = method.toUpperCase() // GET, POST, PUT|PATCH, DELETE
-    body = method !== 'GET' ? body : null
-
-    const options = {
-      url,
-      method,
-      data: body
-    }
+  async function dataFetch({ url, method = "GET", body }) {
+    setLoading(true);
+    setError(null);
+    method = method.toUpperCase();
+    body = method !== "GET" ? body : null;
 
     try {
-      setError(null)
-      const response = await axios(options)
-      const resData = response.data
-
-      switch (method) { // GET, POST, PUT|PATCH, DELETE
-        case 'POST':
-          setData((prev) => [...prev, resData])
-          break
-        case 'PUT':
-        case 'PATCH':
-          setData(prev => prev.map(item => item.id === id ? resData : item))
-          break
-        case 'DELETE':
-          setData(prev => prev.filter((item) => item.id !== id))
-          break
+      const res = await axios({ url, method, data: body });
+      const resData = res?.data?.data || res?.data;
+      switch (method) {
+        case "POST":
+          setData((prev) => (prev ? [resData,...prev] : [resData]));
+          break;
+        case "PUT":
+        case "PATCH":
+          setData((prev) => {
+            return prev.map((item) =>
+              item.id === resData.id ? { ...item, ...resData } : item
+            );
+          });
+          break;
+        case "DELETE":
+          setData((prev) =>
+            prev ? prev.filter((item) => item.id !== resData.id) : []
+          );
+          break;
         default:
-          setData(resData)
+          setData(resData);
       }
     } catch (error) {
-      setError(error.response?.data?.message || error.message)
+      console.error("Error detail: ", error);
+      setError(error.response?.data?.error || "An error occurred");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-
   }
 
-  return [data, dataFetch, loading, error]
+  return [data, dataFetch, loading, error];
 }
-
-export default useFetch

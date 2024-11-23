@@ -1,12 +1,12 @@
-function Modal ({ isOpen, setIsOpen, children }) {
+import "../assets/styles/Modal.css"
+
+export default function Modal({ isOpen, setIsOpen, children }) {
   return (
-    <div className={`modal ${isOpen ? 'modal--open' : ''}`}>
-      <div className="modal--overlay"></div>
+    <div className={`modal ${isOpen ? "modal--open" : "modal--closed"}`}>
+      <div className="modal--overlay" onClick={() => setIsOpen(false)} />
       <div className="modal__container">
         {children}
-        <button onClick={() => setIsOpen(false)}>Cerrar modal</button>
-      </div>
+        </div>
     </div>
-  )
+  );
 }
-export default Modal
