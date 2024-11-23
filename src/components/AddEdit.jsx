@@ -1,7 +1,8 @@
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
-import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
+import React, { useState, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { TextField, Button, Checkbox, FormControlLabel, InputLabel, FormGroup, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import "../assets/styles/AddEdit.css";
 
 const schema = yup.object({
@@ -15,6 +16,8 @@ const schema = yup.object({
 });
 
 export default function AddEdit({ user, onSave }) {
+  const [imagePreview, setImagePreview] = useState(null); // Estado para la imagen cargada
+
   const {
     handleSubmit,
     register,
@@ -29,6 +32,7 @@ export default function AddEdit({ user, onSave }) {
   useEffect(() => {
     if (user) {
       reset(user);
+      setImagePreview(user.image_url); // Mostrar la imagen inicial si existe
     } else {
       reset({
         first_name: "",
@@ -44,7 +48,7 @@ export default function AddEdit({ user, onSave }) {
 
   const onSubmit = (dataForm) => {
     if (!dataForm.image_url) {
-      // Use the default image if no image is provided
+      // Usar imagen por defecto si no se carga ninguna
       dataForm.image_url = "./src/assets/img/user.svg";
     }
     if (!dataForm.birthday) {
@@ -68,85 +72,106 @@ export default function AddEdit({ user, onSave }) {
 
   const showBirthday = watch("showBirthday", false);
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Crear una URL temporal para mostrar la imagen cargada
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result); // Actualizar la vista con la imagen cargada
+      };
+      reader.readAsDataURL(file); // Leer el archivo como una URL
+    }
+  };
+
   return (
     <div className="form">
       <h2 className="form__title">{user ? "Update" : "Register User"}</h2>
       <form className="form__content" onSubmit={handleSubmit(onSubmit)}>
-        <div className="form__group">
-          <label className="form__label">First Name:</label>
-          <input
-            className="form__input"
-            type="text"
+        <FormGroup>
+          <TextField
+            label="First Name"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            error={!!errors.first_name}
+            helperText={errors.first_name?.message}
             {...register("first_name")}
           />
-          <span className="form__error">
-            {errors.first_name && errors.first_name.message}
-          </span>
-        </div>
-        <div className="form__group">
-          <label className="form__label">Last Name:</label>
-          <input
-            className="form__input"
-            type="text"
+          <TextField
+            label="Last Name"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            error={!!errors.last_name}
+            helperText={errors.last_name?.message}
             {...register("last_name")}
           />
-          <span className="form__error">
-            {errors.last_name && errors.last_name.message}
-          </span>
-        </div>
-        <div className="form__group">
-          <label className="form__label">Email:</label>
-          <input className="form__input" type="text" {...register("email")} />
-          <span className="form__error">
-            {errors.email && errors.email.message}
-          </span>
-        </div>
-        <div className="form__group">
-          <label className="form__label">Password:</label>
-          <input
-            className="form__input"
+          <TextField
+            label="Email"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            error={!!errors.email}
+            helperText={errors.email?.message}
+            {...register("email")}
+          />
+          <TextField
+            label="Password"
+            variant="outlined"
+            fullWidth
+            margin="normal"
             type="password"
+            error={!!errors.password}
+            helperText={errors.password?.message}
             {...register("password")}
           />
-          <span className="form__error">
-            {errors.password && errors.password.message}
-          </span>
-        </div>
-        <div>
-          <input
-            type="checkbox"
-            {...register("showBirthday")}
-            id="showBirthday"
-          />
-          <label className="form__label" htmlFor="showBirthday">
-            Do you {user ? "want to update your" : "want to add your"} birthday?
-          </label>
-          <br />
-        </div>
-        {showBirthday && (
-          <div className="form__group">
-            <label className="form__label">Birthday:</label>
-            <input
-              className="form__input"
-              type="date"
-              {...register("birthday")}
-              max={new Date().toISOString().split("T")[0]}
-            />
-          </div>
-        )}
-        <div className="form__group">
-          <label className="form__label">Upload Profile Picture:</label>
-          <input
-            className="form__input"
-            type="file"
-            accept="image/*"
-            {...register("image_url")}
-          />
-        </div>
 
-        <button className="submit" type="submit">
-          {user ? "Update" : "Save"}
-        </button>
+          <FormControlLabel
+            control={<Checkbox {...register("showBirthday")} />}
+            label={`Do you ${user ? "want to update your" : "want to add your"} birthday?`}
+          />
+
+          {showBirthday && (
+            <TextField
+              label="Birthday"
+              variant="outlined"
+              type="date"
+              fullWidth
+              margin="normal"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              {...register("birthday")}
+              inputProps={{ max: new Date().toISOString().split("T")[0] }}
+            />
+          )}
+
+          <div className="form__group">
+            <InputLabel htmlFor="image_url">Upload Profile Picture:</InputLabel>
+            <input
+              type="file"
+              accept="image/*"
+              {...register("image_url")}
+              onChange={handleImageChange} // Agregar el manejador de cambio para la imagen
+            />
+            {imagePreview && (
+              <div className="form__image-preview">
+                <img src={imagePreview} alt="Preview" width={100} />
+              </div>
+            )}
+          </div>
+
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            fullWidth
+            sx={{ marginTop: 2 }}
+          >
+            {user ? "Update" : "Save"}
+          </Button>
+        </FormGroup>
       </form>
     </div>
   );
