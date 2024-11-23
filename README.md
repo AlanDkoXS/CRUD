@@ -55,10 +55,6 @@ Once the application is running, you will be able to:
 - Edit or delete existing users by interacting with the buttons next to each user.
 - View user details such as email and birthday.
 
-## Screenshots
-
-*(Insert some screenshots of the app here, if desired)*
-
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
